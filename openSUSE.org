@@ -1,0 +1,35 @@
+
+* Install progs in openSUSE
+** 01.2019 
+*** bspwm components in snap
+**** bspwm
+**** sxhkd
+**** compton
+**** rofi
+**** feh
+**** nm-applet
+**** tint2
+**** polybar
+**** lemonbar
+**** notify-osd
+**** xxcb
+**** lxapperane
+**** pcmanfm
+*** progs install in current month
+**** nitrogen
+**** dunst
+**** i3lock
+**** mpd
+**** mpc
+**** ncmpcpp
+**** vifm
+**** vifm-colors
+**** nnn
+**** TODO delete "kmix"
+**** TODO delete "vte2"
+**** TODO delete "gmerlin-alsamixer"
+** 22.01.2019
+*** sxiv
+    Image viewer
+*** rclone
+    Rsync for cloud (use from google drive)
