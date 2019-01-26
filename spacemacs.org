@@ -4,6 +4,474 @@
 ** Ctr + e - скролл вверх курсор на месте
 
 
+* Emacs Key
+** C-x + 2 - Горизонтальное разделение окна
+** C-x + 3 - Вернтикальное разделение окна
+** C-x + 0 - Закрыть текущее окно
+** C-x + 1 - Оставить текущее окно единственным
+** C-x + o - Перенос курсора по окнам
+** C-x + k - Убить текущий буфер
+** C-x + b - Выбор буфера
+** C-x + С-e - Выполнить, вычислить (что находится слева от курсора)
+    (+ 2 3)_ 
+    (message "Hello world!")_
+    
+    Определение функции
+    (defun my-func ()
+        (message "Hello World!"))_  - инициализируем ф-цию C-x + C-e
+    Вызов функции
+    (my-func)_ - вызываем ф-цию C-x + C-e
+    
+    Определение функци для сочетания клавиш
+    (defun my-func ()
+        (interactive)
+        (message "Hello World!"))_  - инициализируем ф-цию C-x + C-e
+    Вызов функции
+    M-x: my-funk
+    M-a: my-func
+    
+    Назначение клавиш на функцию
+    (global-set-key (kbd "M-<f9>") 'my-func)
+    Отключение назначенных клавиш
+    (global-unset-key (kbd "M-<f9>"))
+** C-h + f :kbd - Документация на функцию
+** C-h + k : Документация на keybinding
+** C-h + v : Документация по переменной
+** C-h + a : Неявный поиск по ключевому слову    
+** M-x - toggle-truncate-lines: Вкл Выкл перенос строк
+
+
+* Emacs tutorial
+** Документация:
+*** Гайд тур по emacs
+    https://www.gnu.org/software/emacs/tour/
+*** Practical Emacs Lisp от китайца
+    http://ergoemacs.org/emacs/elisp.html
+*** AlexOtt
+    http://alexott.net/ru/index.html
+** Типы данных
+
+   t - true
+   nil, '() - false
+   1, -2, 3.0 - числа
+   ?a, ?b, ?\n - символы
+   "abc" - строка
+   'abc - символ (название переменной) может иметь и не иметь значение
+
+*** Списки скорость доступа O(n)
+
+    (cons 1 2) - список "пара"
+    (cons 1 (cons 2 (cons 3 nil))) - список из пар
+    '(1 2 3) - кавычка означает, что это не ф-ция а список
+    (list 1 2 3) - список
+    (list 1 "abc" ?a) - список
+
+*** функции для доступа к спискам
+
+    car - получает первое значение списка
+    (car (list 1 2 3))
+    cdr - получает все кроме первого значения
+    (cdr (list 1 2 3))
+
+*** Массивы скорость доступа O(const)
+
+    [1 2 3] - массив
+
+*** Основные языковые конструкции
+
+**** point - место где находится курсор (Elisp)
+**** mark - метка (Elisp)
+**** region - объект выделения (все выделенное является данным объектом) (Elisp)
+**** buffer - содержимое того что редактируем (Elisp)
+
+     (message "Hello") - вызов функции с параметром "Hello"
+     '(message "Hello") - А это список, состит из символа message b строки "Hello"
+
+** Объявление и вызов функции
+   
+#+BEGIN_SRC emacs-lisp
+
+   (defun myfun ()
+     (message "Hello!"))
+   
+   (myfun)
+
+#+END_SRC
+
+** Объявление интерактивной ф-ции. Вызов M-x: myfun1 или через бинд клавиш
+
+#+BEGIN_SRC emacs-lisp
+
+   (defun myfun1 ()
+     (interactive)
+     (message "Hello"))
+
+#+END_SRC
+
+** Оператор If
+
+#+BEGIN_SRC emacs-lisp
+
+   (if (>= 2 1)
+       (message "then")
+       (message "else"))
+
+#+END_SRC
+
+** Переменные
+
+   (defvar *a* 17) ;; Глобальная переменная
+   (defvar a 17)   ;; Объявление переменной
+   a
+   (setq a 18)     ;; Переопределяем значение переменной
+
+#+BEGIN_SRC emacs-lisp
+
+   (let ((a 11)    ;; Локальные переменные
+         (b 15))
+     (if (> a b)
+       (message "then")
+       (message "else")))
+
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp 
+
+   (let* ((c 11)    ;; Локльная привязка 
+         (b (+ c 10)))
+     (message (number-to-string b)))
+
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp 
+
+   (if (< 2 1)
+       (message "then")
+     (progn
+       (message "Hello!")    ;; Выведет как "else" так и "Hello!". Вернет "else"
+       (message "else")))
+
+#+END_SRC
+
+** Циклы
+
+#+BEGIN_SRC emacs-lisp  
+
+   (let ((i 0))
+     (while (< i 10)
+       (message (number-to-string i))
+       (setq i (1+ i))))
+
+#+END_SRC
+
+** Виды Функций
+
+   (point) - фукция возвращает номер символа на котором находится
+   (search-forward "point") - функция ищет какой-нибудь текст
+   (cl-evenp 10) - сообщает о четности числа t - четное, nil - нечетное
+   (cl-oddp 11) - функция обратная предыдущей
+   (insert "Hello") - функция вставляет текст где находится курсор
+
+** Пример мини плагина для HTML
+
+#+BEGIN_SRC emacs-lisp 
+
+   (defvar *curl-style-num* 0)
+
+   (defun stylize-list ()
+     (interactive)
+     (save-excursion
+       (search-forward "li")
+       (if (cl-evenp *curl-style-num*)
+  	   (insert " class=\"even-class\"")
+           (insert " class=\"odd-class\""))
+       (setq *curl-style-num* (1+ *curl-style-num*))))
+
+    (global-set-key (kbd "<f9>") 'stylize-list)
+
+#+END_SRC
+
+    <ul>
+     <li class="even-class"></li>
+     <li class="odd-class"></li>
+     <li class="even-class"></li>
+     <li class="odd-class"></li>
+     <li class="even-class"></li>
+     <li class="odd-class"></li>
+    </ul>
+
+** Функции для работы со списками
+
+   (length '(1 2 3 4 5))      ;; длинна списка
+   (nth 1 '(1 2 3 4 5))       ;; получение значения по индексу
+   (nthcdr 2 '(1 2 3 4 5))    ;; получение среза без первых 2х элементов  [3:]
+   (last '(1 2 3 4 5))        ;; получение последнего элемента. Возвращ список (5)
+   (car (last '(1 2 3 4 5)))  ;; получение последнего элемент. Возвращ эл 5
+   (butlast '(1 2 3 4 5))     ;; получение всего кроме последнего эл
+
+** Предикаты
+
+   (listp '(1 2 3 4 5))       ;; проверяет свой аргумент на принадлежность к списку
+   (listp nil)                ;; вернет пустой список т.к. '()==nil
+   (atom 1)                   ;; проверяет неделимость аргумента. Здесь вернет t
+   (atom '(1 2 3 4 5))        ;; вернет nil
+   (atom nil)                 ;; вернет t
+   (atom '())                 ;; вернет t
+   (null 1)                   ;; проверяет аргумент на ноль. Здесь вернет nil
+   (null nil)                 ;; Здесь вернет t
+
+** Анонимные функции и лексические замыкания
+
+#+BEGIN_SRC emacs-lisp 
+
+   ((lambda (a b)             ;; Анонимная ф-ция, объявление и вызов
+     (+ a b)) 1 2)
+
+#+END_SRC
+
+*** Пример
+
+#+BEGIN_SRC emacs-lisp 
+
+    (setq a 10)
+
+    (setq f1 (lambda (b)       ;; Пивязка анонимной ф-ции к символу f1
+	   (+ a b)))
+
+    (funcall f1 1)             ;; Ф-ция привязанная к сиволу вызывается funcall. 11
+
+    (let ((a 20))
+      (funcall f1 1))          ;; Ф-ция f1 не лексическое замыкание. Вернет 21
+
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp 
+
+    (setq lexical-binding t)   ;; Устанавливаем лексическое замыкание.
+                               ;; или в заголовке файла написать ниже следующее
+                               ;;; -*- lexical-binding: t -*-
+
+    (setq c 20)
+
+    (setq f2 (lambda (d)       ;; Ф-ция f2 теперь лексическое замыкание
+	       (+ c d)))       ;; Ф-ция запомнит при объявлении значение арг с=20 
+
+    (funcall f2 1)             ;; Ф-ция вернет 21
+
+    (let ((a 30))
+     (funcall f2 1))           ;; Ф-ция вернет 21
+
+#+END_SRC
+
+** Функции высшего порядка
+
+
+   (funcall '+ 1 2 3)          ;; Вызов ф-ции сложения аргументов по символу '+
+   (apply '+ '(1 2 3))         ;; Вызов ф-ции сложения списков по символу '+
+
+   (mapcar (lambda (a)         ;; mapcar отображает ф-цию lambda на каждый эл. списка
+             (1+ a))           ;; возвращает (2 3 4 5 6)
+	    '(1 2 3 4 5))
+
+   (reduce
+    (lambda (m o) (concat m " " o))
+      '("foo" "bar" "baz"))    ;; Ф-ция reduce см javascript
+
+** Режимы (моды)
+
+                global-map      ;; Глобальный режим. Биндинг (global-set-key ...)
+   Major Mode   local-map       ;; Режим для буфера. HTML mode, Python mode и т.д.
+   Minor Mode   minor-mode-maps ;; Расширение для major mode. Может быть несколько
+
+*** Привязка к web mode
+
+#+BEGIN_SRC emacs-lisp 
+
+    (defun my-hello-func ()
+      (interactive)
+      (message "Hello, World!"))
+
+    (defun my-keybindings ()
+      (interactive)
+       (let ((my-key-map (current-local-map)))
+        (local -unser-key (kbd "<f9>"))
+        (define-key my-key-map (kbd "<f9>") 'my-hello-func)))
+
+    (add-hook 'web-mode-hook 'my-keybindings)
+
+#+END_SRC
+
+*** Пример привязки функции и ее кей билдинга к web major mode
+
+#+BEGIN_SRC emacs-lisp 
+
+    (defun my-wrapper ()
+      (interactive)
+      (let* ((txt (buffer-substring (mark) (point)))
+    	    (lines (split-string txt "\n")))
+        (kill-region (mark) (point))
+        (insert
+         (mapconcat '(lambda (s)(concat "<li>" s "</li>"))
+		    lines
+		    "\n"))))
+
+    (defun my-keybindings ()
+      (interactive)
+      (let ((my-key-map (current-local-map)))
+        (local -unser-key (kbd "<f9>"))
+        (define-key my-key-map (kbd "<f9>") 'my-wraper)))
+
+    (add-hook 'web-mode-hook 'my-keybindings)
+
+#+END_SRC
+
+** Plugins
+*** Console Emacs
+    $ emacs -nw : запуск emacs в консоли
+*** Emacs daemon
+    $ emacs --daemon : запуск в режиме демона
+    $ emacsclient file.py : открытие файла в консольном emacs
+    $ emacsclient -c file.py : открытие файла во фрейме emacs
+*** Auto-complete
+    start (M-x: auto-complete-mode)
+*** litable
+    start (M-x: litable-mode)
+
+     (let ((a 1)
+           (b 2))
+       (+ a b))
+
+     (defun func3 (a b)
+       (+ a b))
+
+     (func3 1 2)
+
+     (defun fn (name)
+       (message "Hello, %s" name))
+
+     (fn "Emacs!")
+
+*** ielp emacs-lisp REPL
+    start (M-x: ielm)
+*** eshel emacs-lisp REPL
+    start (M-x: eshell)
+*** ediff - сравнение двух файлов
+    M-x: ediff -> выбор файла 1, выбор файла 2
+     Панель управления: ? - расскрыть закрыть
+     n, p: следующее, предыдущее изменение
+     a, b: названия буфуров. При нажатии a (copy)-> b, и наоборот наж. b -> a
+     q: выход из режима сравнения файлов
+*** magit система контроля версий для emacs
+**** M-x: magit-status -> путь к репозиторию
+     В интерактивном буфере - показ файлов
+     s, S: пометить файла/все файлы в stage
+     u, U: отмена метки/всех меток файлов
+     с: коммит файлов -> название комита
+     l+r+l RET RET: история изменеий + ветки
+       l+L: развернутая история
+     P+P -> github: Пушим на Github
+     f+f: git fetch
+     F+F: git pull
+
+** ORG-MODE
+*** Открытие закрытие вкладок (заголовков)
+**** Tab: show current раскрытие текущего заголовка
+**** Shift-tab: show all childeren
+**** C-u C-u C-u Tab: show all including drawers
+**** Startup options
+     #+STARTUP: overview
+     #+STARTUP: content
+     #+STARTUP: showall
+     #+STARTUP: showeverything
+
+*** Редактирование
+**** M-RET: добавить такойже елемент
+**** M-Shift-RET: вставить TODO елемент
+**** M-Left: изменить уровень вложенности в большую сторону
+**** M-S-Left:изменить уровень вложенности  в большую сторону + поддерево
+**** M-Right: изменить уровень вложенности в меньшую сторону
+**** M-S-Right: изменить уровень вложенности в меньшую сторону + поддерево
+**** M-S-UP: перемещение элемента вверх по списку
+**** M-S-DOWN: перемещение элемента вниз по дереву
+**** C-c C-x C-w: вырезать подерево
+**** C-c C-x M-w: копировать поддерево
+**** C-c C-x C-y: вставить поддерево
+
+*** Виды списков
+**** Для добавления елемента списка M-RET
+**** Нумерованный список
+     1. First
+     2. Second
+     3. Third
+**** Ненумерованный список
+     * abc
+     * efg
+     - qwe
+     - ert
+**** Список с чекбоксами M-Shift-RET
+     * [ ] First element
+     * [X] Second element (C-c C-c -- toggle checkbox state)
+     * [ ] Third element
+
+*** Заметки, сноски
+**** C-c C-z -> текст заметки
+     - Note taken on [2019-01-26 Сб 18:13] \\
+       -Оразец заметки. Время автоматически
+
+**** C-c C-x f -> сноски в самом низу автоматом [fn:1]
+
+*** TODO листы
+**** C-c C-t: изменение TODO состояния
+**** Shift-Left, S-Right: изменение TODO состояния
+**** S-M-RET: вставка нового TODO 
+**** (setq org-todo-keywords'((sequence "TODO" "FEEDBACK" "VERIFY" "|" "DONE" "DELEGATED")))
+
+*** Org mode поддержка исходного кода
+**** Подсветка синтаксиса языков 
+     .emacs (setq org-src-fontify-natively 't)
+**** #+begin_src python :tangle yes - начало блока кода
+     
+     #+begin_src python :tangle yes
+       list = ['physics', 'chemistry', 1997, 2000]
+       for l in list:
+           print(i)
+     #+end_src
+
+**** #+end_src - конец блока кода
+**** C-c ': Редактирование кода в отдельном фрэйме. Можно запустить repl
+**** tangle yes/no - возможность экспорта в python файл
+**** C-c C-v t: экспорт всего кода (:tangle yes) в файл (name.org).python
+**** C-c C-e: меню экспорта
+
+*** Заголовок Org файла
+**** #+TITLE: Python programming example
+     Идет в название HTML документа
+**** #+AUTHOR: D.Bushenko
+     Идет в  meta="name"
+**** #+DATE: 02.09.2013
+     Идет в meta="date"
+**** #+EMAIL: d.bushenko@gmail.com
+     Идет в meta="email"
+**** #+DESCRIPTION: Demonstration of org-mode
+**** #+KEYWORDS: org-mode, python
+**** #+LANGUAGE: en
+**** Пример
+      #+HTML: My email: <b>d.bushenko@gmail.com</b>
+      
+      #+BEGIN_HTML 
+      <h3>02.09.2013</h3>
+      #+END_HTML
+      
+      ** Images and links
+      #+CAPTION: Python Tutorial
+      #+ATTR_HTML: title="Python!" style="float:left;"
+      [[file:python-logo.giff]] ## вводится в скобках [[]]
+     
+      This link will point to org-mode home site: http://orgmode.org
+      #+ATTR_HTML: title="The Org-mode homepage" style="color:red;"
+      http://orgmode.org
+
+
 * SPC
 ** J
    Прыгнуть на заданную букву
