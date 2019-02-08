@@ -1,7 +1,11 @@
 
 * SpaceEmacs key
-** Ctr + y - скролл вниз курсор на месте
-** Ctr + e - скролл вверх курсор на месте
+** Ctr + y 
+   скролл вниз курсор на месте
+** Ctr + e 
+   скролл вверх курсор на месте
+** Snippets create
+*** M-x: yas-new-snippet
 
 
 * Emacs Key
@@ -39,6 +43,11 @@
 ** C-h + v : Документация по переменной
 ** C-h + a : Неявный поиск по ключевому слову    
 ** M-x - toggle-truncate-lines: Вкл Выкл перенос строк
+
+   
+* Emacs settings
+** Изменение цвета посветки отступа
+   M-x: customize-face RET highlight-indentation-face RET
 
 
 * Emacs tutorial
