@@ -1,0 +1,648 @@
+* Video programming
+** Сергей Туленцев NoSQL (Not only SQL):
+   https://www.youtube.com/watch?v=JG9Sgnj0xAI
+** про криптографию Владимир Иванов:
+   https://www.youtube.com/watch?v=yrOKSZ6CxtU
+** сетвеые технологии Владимир Иванов:
+   https://www.youtube.com/watch?v=x9z2uoyPd6g
+** Олег Бунин высоконагруженные системы :
+   https://www.youtube.com/watch?v=KmIE5K6adus﻿
+
+* Django
+** Расширение в шаблонах
+
+  #+BEGIN_SRC html
+
+   {% block title %}  {{ block.super }} - Контакты  {% endblock title %}
+
+  #+END_SRC
+
+** Подсветка текущего пункта меню в шаблоне HTML
+
+   #+BEGIN_SRC html
+
+   {% url 'home' as home %}
+   {% url 'about' as about %}
+   <li {% if request.path == home %} class="active" {% endif %} ></li>
+   <li {% if request.path == about %} class="active" {% endif %} ></li>
+
+   #+END_SRC
+** БД заполнение через shell (json)
+*** Файл posts.json
+
+    #+BEGIN_SRC json_file
+
+    [
+      {
+        "title": "My Updated Post",
+        "content": "My first updated post!\r\n\r\nThis is exciiting!",
+        "user_id": 1
+      },
+      ...
+    ]
+
+    #+END_SRC
+
+*** python shell:
+
+    #+BEGIN_SRC shell
+
+      import json
+      from blog.models import Post
+      with open('posts.json') as f:
+        posts_json = json.load(f)
+
+      for post in posts_json:
+        post = Post(title=post['title'], content=post['content'], author_id=['user_id'])
+        post.save()
+
+      exit()
+
+    #+END_SRC
+
+* JavaScript
+** vue cli install
+   
+   #+BEGIN_SRC bash
+
+   npm install -g @vue/cli
+   
+   #+END_SRC
+
+* Linux
+** import key
+
+   *Импортируем ключ для приложения*
+
+   #+BEGIN_SRC bash
+   gpg --recv-keys DBD2CE893E2D1C87
+   #+END_SRC
+
+** ipv6 disable
+   
+   *Убираем ipv6*
+
+   ~/usr/lib/sysctl.d/50-default.conf~
+   ~/etc/sysctl.conf~
+   
+   #+BEGIN_SRC bash
+   в конец файла добавляем:  
+   net.ipv6.conf.all.disable_ipv6 = 1  
+   net.ipv6.conf.default.disable_ipv6 = 1  
+   net.ipv6.conf.lo.disable_ipv6 = 1  
+   net.ipv6.conf.tun0.disable_ipv6 = 1
+   #+END_SRC
+
+   #+BEGIN_SRC bash
+   $ sudo sysctl -p
+   #+END_SRC
+
+   или
+
+   #+BEGIN_SRC bash
+   $ sudo gedit /etc/default/grub
+   #+END_SRC
+
+   GRUB_CMDLINE_LINUX="ipv6.disable=1"
+
+   #+BEGIN_SRC bash
+   $ sudo update-grub2
+   #+END_SRC
+** DOKER start
+
+   #+BEGIN_SRC bash
+   $ sudo systemctl start docker.service
+   #+END_SRC
+
+** Baloo
+   
+   *Отключение Baloo (KDE)*
+   ~индексация файлов~
+
+   ~/.kde4/share/config/baloofilerc
+
+   #+BEGIN_SRC bash
+   [Basic Settings]
+   Indexing-Enabled=false
+   #+END_SRC
+
+** iso to Flash
+
+   *Запись образа на флеш накопитель*
+
+   Проверяем имя флешки в системе
+
+   #+BEGIN_SRC bash
+   $ sudo fdisk -l
+   #+END_SRC
+
+   Запись на флеш накопитель через терминал
+
+   #+BEGIN_SRC bash
+   $ sudo dd bs=4M if=/path/to/image.iso of=/dev/sdX status=progress && sync
+   #+END_SRC
+
+** Locale settings
+
+   *Установка локали*
+
+   #+BEGIN_SRC bash
+   $ sudo nano /etc/locale.gen
+   #+END_SRC
+   
+   расскоментировать -> ru_RU.UTF-8
+   -> en_US.UTF-8
+
+   #+BEGIN_SRC bash
+   $ sudo nano /etc/locale.conf
+   #+END_SRC
+
+   добавить:
+   LANG=ru_RU.UTF-8
+   LANG=en_US.UTF-8
+
+   *по желанию*
+
+   #+BEGIN_SRC bash
+   $ sudo mkinitcpio -p linux (для Arch Linux)
+   #+END_SRC
+
+   *Если в оболочке KDE язык системы не изменился удалить файлы:*
+
+   ~/.config/plasma-localerc
+   ~/.config/plasma-locale-settings.sh
+
+** NOT start X
+
+   *Не стратуют иусы*
+
+   В загрузочном меню grub выбираем нужный пункт и нажимаем "e"
+   в строку с ~quiet~ пишем:
+
+   #+BEGIN_QUOTE
+   
+   nomodeset  
+   nouveau.modeset=0  
+   i915.modeset=1  
+   radeon.modeset=0  
+   nvidia.modeset=0  
+   modprobe.blacklist=nouveau
+   
+   #+END_QUOTE
+
+   *acpi_osi=! acpi_osi="Windows 2009"* для ноутбуков MSI
+   *acpi_osi=! acpi_osi="Windows 2015"* для др ноутбуков
+
+   ##Если добавляем запись непосредственно в grub.cfg
+
+   *acpi_osi=! acpi_osi=\"Windows 2009\"* экранируем кавычки
+   
+   *Reload GRUB2*
+
+   #+BEGIN_SRC bash
+   $ sudo grub mkconfig -o /boot/grub/grub.cfg
+   #+END_SRC 
+
+** Teamviewer start
+
+   *Запуск Teamviewer*
+   Перед запуском приложения
+   
+   #+BEGIN_SRC bash
+   $ sudo teamviewer --daemon enable
+   #+END_SRC
+
+** Addiction remove
+   
+   *Удаление приложения с его зависимостями*
+
+   #+BEGIN_SRC bash
+   $ sudo pacman -Rscn packagename
+   #+END_SRC
+
+   *Вывод зависимостей для пакета (т.е. какие пакеты зависят от данного пакета)*
+
+   #+BEGIN_SRC bash
+   $ sudo pacman -Qi packagename
+   #+END_SRC
+
+** Steam
+
+   *Запуск игр в Steam через primusrun*
+
+   В меню "параметры запуска" пишем несколько вариантов:
+
+   #+BEGIN_QUOTE
+   1. primusrun %command% (60 fps)
+   2. vblank_mode=0 primusrun %command% (80 fps)  
+   3. vblank_mode=0 optirun -b primus %command% (80 fps)
+   #+END_QUOTE
+   
+   *На страх и риск можно повысить fps настройками в файле:*
+
+   ~/usr/bin/primusrun~
+
+   #+BEGIN_SRC bash
+   в строку:
+   # export PRIMUS_SYNC=" from ${PRIMUS_SYNC:-0}
+   расскоментировать и поменять на:
+   export PRIMUS_SYNC=" from ${PRIMUS_SYNC:-1}
+   #+END_SRC
+
+** DNS Crypt
+   
+   *Запуск dnscrypt*
+
+   #+BEGIN_SRC bash
+   $ systemctl enable dnscrypt-proxy.service
+   $ systemctl start dnscrypt-proxy.service
+   #+END_SRC
+ 
+** Grub update
+
+   *Обновление конфигурации загрузчика GRUB2*
+
+   #+BEGIN_SRC bash
+   $ sudo grub-mkconfig -o /boot/grub/grub.cfg
+   #+END_SRC
+
+** QEMU 
+
+   *Перед запуском virt-manager (Arch Linux)*
+
+   #+BEGIN_SRC bash
+   $ systemctl start libvirtd
+   $ systemctl enable libvirtd
+   #+END_SRC
+
+** Keyboard layout
+
+   *Установка расскладки клавиатуры*
+
+   #+BEGIN_SRC bash
+   $ sudo -i
+   $ localectl set-x11-keymap us,ru pc104 "" grp:alt_shift_toggle
+   #+END_SRC
+ 
+** Screen settings
+
+   *Установка разрешения экрана при загрузке системы*
+
+   ~/etc/default/grub~
+   GRUB_GFXPAYLOAD_LINUX="1920x1080x32"
+
+   *Перезагрузка GRUB*
+
+   #+BEGIN_SRC bash
+   $ sudo grub-mkconfig -o /boot/grub/grub.cfg
+   #+END_SRC
+** Wget settings
+
+   *Настройка wget*
+   
+   команда в консоли:
+
+   #+BEGIN_SRC bash
+   $ wget -r -k -l 10 -p -E -nc http://site.com/
+   #+END_SRC
+   
+   настройка конфигурационного файла:
+
+   #+BEGIN_SRC bash
+   $ sudo nano /etc/wgetrc
+   #+END_SRC
+
+   *Скачать файл через прокси http:*
+   ~в файле:~
+   http_proxy="http://33.22.44.44:8080"
+   ~в консоли:~
+
+   #+BEGIN_SRC bash
+   $ wget http://www.google.com/favicon.ico
+   #+END_SRC
+
+   *Скачать файл через прокси https:*
+   ~в файле:~
+   https_proxy="http://33.22.44.44:8080"
+   ~в консоли:~
+   
+   #+BEGIN_SRC bash
+   $ wget https://www.google.com/favicon.ico
+   #+END_SRC
+
+   *Использовать proxy с авторизацией*
+
+   ~в файле:~
+   http_proxy="http://33.22.44.44:8080"
+   ~в консоли:~
+
+   #+BEGIN_SRC bash
+   $ wget -proxy-user=user -proxy-password=password http://www.google.com/favicon.ico
+   #+END_SRC
+** System errors
+
+   *Просмотр ошибок после загрузки системы*
+
+   #+BEGIN_SRC bash
+   $ sudo systemctl --failed
+   $ sudo systemctl status systemd-modules-load
+   #+END_SRC
+** Run files in console
+
+   *Запуск программ из консоли без привязки к ней*
+
+   #+BEGIN_SRC bash
+   $ nohup programname > /dev/null &
+   #+END_SRC
+** WI-FI marine
+
+   *Сайт с информацией по установке:*
+   http://ubuntovod.ru/instructions/fix-wi-fi-ubuntu-12-10.html
+   
+   *Обновить систему*
+
+   #+BEGIN_SRC bash
+   $ sudo apt update && sudo apt upgrate
+   #+END_SRC
+
+   *Перезагрузка, далее:*
+
+   #+BEGIN_SRC bash
+   $ sudo apt install linux linux-headers-generic kernel-package
+   $ sudo apt install --reinstall bcmwl* firmware-b43-lpphy-installer b43-fwcutter
+   #+END_SRC
+
+   *Перезагрузка*
+   Если после перезагрузки Wi-Fi так и не ожил - попробуйте эти команды:
+
+   #+BEGIN_SRC bash
+   $ sudo apt remove bcmwl-kernel-sourcesudo
+   $ sudo apt install firmware-b43-installer b43-fwcutter
+   #+END_SRC
+
+   *И вновь перезагрузите компьютер. Должно помочь.*
+** Postgres DB
+
+   *Установка, настройка, запуск базы*
+   
+   #+BEGIN_SRC bash
+   $ su
+   enter pass..
+   $ su postgres
+   $ initdb --locale en_GB.UTF-8 -E UTF8 -D '/var/lib/postgres/data'
+   $ exit
+   $ exit
+   #+END_SRC
+
+   *Запускаем Postgres*
+
+   #+BEGIN_SRC bash
+   $ sudo systemctl start postgresql
+   #+END_SRC
+
+   *Проверяем запуск базы*
+
+   #+BEGIN_SRC bash
+   $ systemctl status postgresql
+   #+END_SRC
+
+   *Добавляем в автозагрузку*
+
+   #+BEGIN_SRC bash
+   $ systemctl enable postgresql
+   #+END_SRC
+
+   *Вход в DB*
+
+   #+BEGIN_SRC bash
+   $ sudo -u postgres psql
+   #+END_SRC
+
+   *Создание новой DB*
+
+   #+BEGIN_SRC bash
+   $ create database testdb;
+   #+END_SRC
+
+   *Просмотр списка баз*
+
+   #+BEGIN_SRC bash
+   $ \l
+   #+END_SRC
+
+   *Коннект к созданной DB*
+
+   #+BEGIN_SRC bash
+   $ \c testdb
+   #+END_SRC
+
+   *Создаем схему*
+
+   #+BEGIN_SRC bash
+   $ create schema testdbschema
+   #+END_SRC
+
+   *Создаем таблицу*
+
+   #+BEGIN_SRC bash
+   $ create table testdbschema.table1 (id integer, password CHAR(10))
+   #+END_SRC
+** Deepin DE color restart
+
+   *Если не меняется тема рабочего стола*
+
+   #+BEGIN_SRC bash
+   $ gsettings set com.deepin.wrap.gnome.metacity compositing-manager true
+   #+END_SRC
+
+   github link -> https://github.com/linuxdeepin/developer-center/issues/316
+** Git, Github
+
+   *Инициализация*
+
+   #+BEGIN_SRC bash
+   $ git init
+   #+END_SRC
+
+   *Добавление файлов в репозиторий*
+
+   #+BEGIN_SRC bash
+   $ git add main.py
+   #+END_SRC
+
+   *Массовое добавление файлов в репозиторий*
+
+   #+BEGIN_SRC bash
+   $ git add .
+   #+END_SRC
+
+   *Добавление коммита*
+
+   #+BEGIN_SRC bash
+   $ git commit -m "Initial commit"
+   #+END_SRC
+
+   *Добавление облачного репозитория GitHub*
+
+   #+BEGIN_SRC bash
+   $ git remote add origin https://github.com/dikoobrazz/test_project.git
+   #+END_SRC
+
+   *Заливаем в облако GitHub*
+
+   #+BEGIN_SRC bash
+   $ git push -u origin master
+   #+END_SRC
+
+   *Отслеживаем изменения*
+
+   #+BEGIN_SRC bash
+   $ git status   
+   $ git diff
+   #+END_SRC
+
+   *Комманды после сделанных изменений*
+
+   #+BEGIN_SRC bash
+   $ git add .  
+   $ git commit -m "second commit"  
+   $ git push -u origin master  
+   $ git status
+   #+END_SRC
+
+   #### Реализация веток
+
+   *Проверка веток*
+
+   #+BEGIN_SRC bash
+   $ git branch
+   #+END_SRC
+
+   *Создание и переключение на новую ветку*
+   
+   #+BEGIN_SRC bash
+   $ git checkout -b feature1
+   #+END_SRC
+
+   *Создаем нужные нам файлы добавляем в репозиторий и коммитим*
+
+   #+BEGIN_SRC bash
+   $ touch 3 main2.py && git add . && git commit -m "Feature1 Commit1"
+   #+END_SRC
+
+   *Просмотр веток и коммитов*
+
+   #+BEGIN_SRC bash
+   $ git log --graph
+   #+END_SRC
+
+   *Переключение на другую (master) ветку*
+
+   #+BEGIN_SRC bash
+   $ git checkout master
+   #+END_SRC
+
+   *Первый способ* слияние веток.  Автоматически создается merge коммит
+
+   #+BEGIN_SRC bash
+   $ (master) git merge featurel  
+   $ git log --graph
+   #+END_SRC
+
+   *Второй способ* слияние веток. Исория коммитов линейная
+
+   #+BEGIN_SRC bash
+   $ (featurel) git rebase master  
+   $ git checkout master  
+   $ git log --graph  
+   $ git merge featurel
+   #+END_SRC
+
+   *Третий способ.* rebase + merge commit
+
+   #+BEGIN_SRC bash
+   $ (featurel) git rebase master  
+   $ git checkout master  
+   $ git merge --no-ff featurel  
+   $ git log --graph
+   #+END_SRC
+
+   *Вытягивание всего что появилось в удаленном репозитории, и нет на локалке*
+
+   #+BEGIN_SRC bash
+   $ git pull origin
+   #+END_SRC
+   
+   или
+
+   #+BEGIN_SRC bash
+   $ git pull --rebase origin
+   #+END_SRC
+** Bash commands
+
+   ####Bash commands
+
+   *touch* - создать файл
+   *mkdir* - создать папку
+   *mkdir dir/subdir* - создаст все папки в цепочке
+   
+   *mv subdir dir* - перемещение папки subdir со всем содержимым в папку dir
+   *mv subdir/ dir* - перемещение всего из папки subdir в папку dir
+
+   *rm file* - удаление файла
+   *rm -rf dir* - удаление папки со всем содеримым (ОПАСНО! Быть аккуратнее)
+
+   *cat* - вывод в вконсоль содержимого всего файла
+
+   *head* - вывод 10-ти первых строк содержимого файла
+
+   *tail* - вывод 10-ти последних строк содержимого файла
+   *tail -f system.log* - постоянный вывод последних 10 сообщений в файле
+
+   *grep 'Apr 27’ system.log* - выведет все строки с заданным содержимым из файла system.log
+   *grep Mac system.log* - выведет все строки с “Mac” из файла system.log
+
+   Пэйджеры - программы которые открывают и выводят в консоль содержимое файлов частями, то что помещается на экран
+   • more
+   • less - боее продвинутый, попадаем в режим vim’а
+     
+   #+BEGIN_QUOTE
+     q - выход;
+     h - справка;
+     ctrl + f - перемещение постранично вперед;
+     ctrl + b - перемещение постранично назад;
+     G - переместтиться в начало файла;
+     /char - поиск слова char в файле. n , shift + n - премещение по найденным вперед назад;
+   #+END_QUOTE
+
+   *man* - справка;
+   *man man* - справка по справке;
+   *man mkdir* - справка по команде mkdir
+   *man -f mkdir* - вывод всех категорий где встречается mkdir;
+
+   *which ls* - which показывает где лежит программа;
+
+   *env* - Просмотр списка переменных окружения
+
+   *PATH=/var/tmp:$PATH* - добавляем папку в переменную PATH. Теперь если в папке tmp/ лежит скрипт, его можно запустить из любого места в консоли. Теперь оболочка будет заглядывать и по адресу /var/tmp. Работает только в рамках текущей сессии;
+
+   *ls > outputLs* - перенаправления потока вывода не на экран, а в файл;
+
+   *sort < unsorted* - отсортированный (sort) вывод на экран(<) из файла(unsorted);
+   *sort < unsorted > sorted* - вывести отсоритрованный(sort) файл(unsorted) и записать во новь созданный файл(sorted)
+
+   Использование конвеера ( | )
+   *cat unsorted | sort* - ввыведет отсорированный файл unsorted на экран;
+   *cat unsorted | sort | uniq* - ~//~ + если есть повторения в фйле, выведет в одном экземплре(uniq);
+   *ls | grep test* - выведет на экран все файлы и папки с названием test;
+
+   *history* - вывод истории терминала .bash_history
+   *!524* - повтор (вызов) команды из списка истории, 524 - номер команды в истории;
+   *!cat* - первая встретившаяся сконца списка команда, содержащая cat;
+   *ctrl +r + "history"* - инкрементальный поиск команд в истории. Если найденная команда не та, нажимаем ctrl + r
+
+   *Alias* (псевдонимы для команд)
+   *alias* - вывод списка алиасов утановленных в системе;
+   *alias ll='ls -la'* - назначаем алиас ll, ll исполняет ls -la;
+   *unalias ll* - удаление алиаса;
+   *type ll* - просмотр описания алиаса;
