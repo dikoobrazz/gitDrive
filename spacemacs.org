@@ -1,12 +1,62 @@
 
 * SpaceEmacs key
 ** Ctr + y 
-   скролл вниз курсор на месте
-** Ctr + e 
-   скролл вверх курсор на месте
+   скролл вниз курсесте
+** M + RET or , (запятая) 
+   комбинции клавиш для текущего формата документа
+** Nodejs-repl
+*** ,n' - Switch to repl
+*** ,ns - Switch to repl
+*** ,ne - Send last expression to repl
+*** ,nj - Send current line to repl
+*** ,nr - Send region to repl
+*** ,nl - Load file into repl
 ** Snippets create
 *** M-x: yas-new-snippet
+*** M-/: Расскрыть сниппет
 
+
+* SpaceEmacs ORG MODE
+  Файл orgmode.org
+** Key binding from ORG
+*** zc - закрыть ветку (1 уровень)
+*** zo - открыть ветку (1 уровень)
+
+*** zr - расскрыть все уровни всех веток
+*** za - закрыть все уровни всех веток
+
+*** ,n - Скрыть все ветки кроме текущей
+*** ,N - Показать все ветки
+*** SPC + wc - Расположить по центру
+    Стандартный бинд переназначен в .spacemacs
+    #+BEGIN_SRC emacs-lisp
+    (defun dotspacemacs/layers ()
+    (setq-default dotspacemacs-additional-packages '(olivetti)))
+
+    (defun dotspacemacs/user-config ()
+    ;; I like it a little bit wider
+    (setq-default olivetti-body-width 100)
+    ;; replace the `spacemacs-centered-buffer-mode` binding
+    (spacemacs/set-leader-keys "wc" 'olivetti-mode))
+    #+End_SRC
+**** 
+*** ,xb - Жирный текст (предварительно выделить)
+*** ,xi - Курсивный текст (предварительно выделить)
+*** ,xc - Org code
+*** List
+**** Для автоматического формирования списка для перехода к следующему пункту списка использовать НЕ ENTER (RET), а латинскую букву O
+
+**** Для чекбоксов. Между скобками нужен пробел [ ]. Крестик ставится Ctr+c Ctrl+c, а не буквой x.
+**** Привязка чекбокса заголовка ветки к списку внутри
+     В заголовке ветки пишем [2/3]
+     В самом списке должно быть 3 пункта с чекбоксами
+     В заголовке будет отслеживаться, сколько чекбоксов отмечено во внутреннем списке
+     * [X] test 1
+     * [X] test 2
+     * [ ] test 3
+*** Todo 
+**** Sart todo key 'T'
+**** Change ТОDO state key 'Tab'
 
 * Emacs Key
 ** C-x + 2 - Горизонтальное разделение окна
@@ -480,7 +530,7 @@
       #+ATTR_HTML: title="The Org-mode homepage" style="color:red;"
       http://orgmode.org
 
-
+      
 * SPC
 ** J
    Прыгнуть на заданную букву
@@ -653,3 +703,4 @@
 *** s: Resume last search
 *** y: Буфер всего что было скопированно или удалено
 ** 
+   
