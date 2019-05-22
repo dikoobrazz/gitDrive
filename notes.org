@@ -249,23 +249,22 @@
    *Не стратуют иусы*
 
    В загрузочном меню grub выбираем нужный пункт и нажимаем "e"
+   
    в строку с ~quiet~ пишем:
 
    #+BEGIN_QUOTE
-   
-   nomodeset  
-   nouveau.modeset=0  
-   i915.modeset=1  
-   radeon.modeset=0  
-   nvidia.modeset=0  
-   modprobe.blacklist=nouveau
-   
+   * nomodeset
+   * nouveau.modeset=0
+   * i915.modeset=1
+   * radeon.modeset=0
+   * nvidia.modeset=0
+   * modprobe.blacklist=nouveau
    #+END_QUOTE
 
-   *acpi_osi=! acpi_osi="Windows 2009"* для ноутбуков MSI
-   *acpi_osi=! acpi_osi="Windows 2015"* для др ноутбуков
+   ~acpi_osi=! acpi_osi="Windows 2009"~ для ноутбуков MSI
+   ~acpi_osi=! acpi_osi="Windows 2015"~ для др ноутбуков
 
-   ##Если добавляем запись непосредственно в grub.cfg
+   *Если добавляем запись непосредственно в grub.cfg*
 
    *acpi_osi=! acpi_osi=\"Windows 2009\"* экранируем кавычки
    
