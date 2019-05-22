@@ -746,10 +746,8 @@
     ~Сеть -> Адаптер -> добавить новый (редактируем)~
     
 #+BEGIN_QUOTE
-   
-    vboxnet -> IPv4 адрес - 192.168.100.1     
-    IPv4 маска подсети 255.255.255.0     
-    
+    * vboxnet -> IPv4 адрес - 192.168.100.1
+    *            IPv4 маска подсети 255.255.255.0     
 #+END_QUOTE
 
     *НАСТРОЙКИ виртуальной машины*
@@ -757,21 +755,17 @@
     /Сеть/
     
 #+BEGIN_QUOTE
-   
-    Адапртер1     
-    Виртуальный адаптер хоста → ☑vboxnet0      
-    Дополнительно → ☑Intel PRO/1000 MT Desktop(82540EM)      
-    Кабель подключен → ☑      
-
+    * Адапртер1
+    * Виртуальный адаптер хоста → ☑vboxnet0
+    * Дополнительно → ☑Intel PRO/1000 MT Desktop(82540EM)
+    * Кабель подключен → ☑      
 #+END_QUOTE
 
 #+BEGIN_QUOTE
-
-    Адаптер2     
-    NAT     
-    Дополнительно → ☑Intel PRO/1000 MT Desktop(82540EM)      
-    Кабель подключен → ☑     
-
+    * Адаптер2
+    * NAT
+    * Дополнительно → ☑Intel PRO/1000 MT Desktop(82540EM)
+    * Кабель подключен → ☑     
 #+END_QUOTE
 
     *Файл interfaces (в загруженной виртуальной машине)*
@@ -783,15 +777,13 @@
     #+END_SRC
 
     #+BEGIN_QUOTE
-    
-    iface eth0 inet static    
-    address 192.168.100.16    
-    netmask 255.255.255.0    
-    auto eth0    
+    * iface eth0 inet static
+    * address 192.168.100.16
+    * netmask 255.255.255.0
+    * auto eth0    
 
-    iface eth1 inet dhcp    
-    auto eth1    
-
+    * iface eth1 inet dhcp
+    * auto eth1    
     #+END_QUOTE
 
     *На хост машине добавляемся в группу*
@@ -811,14 +803,12 @@
     #+END_SRC
 
     #+BEGIN_QUOTE
-    
-    vboxdrv  
-    vboxnetadp   
-    vboxnetflt   
-    
+    * vboxdrv
+    * vboxnetadp
+    * vboxnetflt   
     #+END_QUOTE
 
-    **Расшаривание общей папки**
+    *Расшаривание общей папки*
 
     #+BEGIN_SRC bash
 
@@ -826,7 +816,7 @@
     
     #+END_SRC
 
-    **Добавляемся в группу**
+    *Добавляемся в группу*
 
     #+BEGIN_SRC bash
     
@@ -834,7 +824,7 @@
 
     #+END_SRC
 
-    **В самой виртуальной машине когда загрузится создаем папку vboxshare и в терминале**
+    *В самой виртуальной машине когда загрузится создаем папку vboxshare и в терминале*
 
     #+BEGIN_SRC bash
 
@@ -842,7 +832,7 @@
     
     #+END_SRC
 
-    **На хост-машине тоже должна быть папка vboxshare**
+    *На хост-машине тоже должна быть папка vboxshare*
 ** Nvidia + Bumblebee #arch linux
 *** Установка и настройка Nvidia + Bumblebee
 
@@ -918,7 +908,7 @@
     
     #+END_SRC
 
-    /\/home/just/
+    ~/home/just/~
 
     #+BEGIN_SRC bash
 
@@ -939,10 +929,8 @@
     *Устанавливаем*
 
     #+BEGIN_QUOTE
-    
-    primus     
-    lib32-primus     
-
+    * primus
+    * lib32-primus     
     #+END_QUOTE
 
     *Запуск программ с видеокартой*
@@ -1009,29 +997,23 @@
     *Отключение / включение снимков временной шкалы*
 
     #+BEGIN_QUOTE
-    
-    Включение. snapper -c root set-config "TIMELINE_CREATE=yes"     
-    Отключение. snapper -c root set-config "TIMELINE_CREATE=no"    
-    Временные снимки временной шкалы включены по умолчанию, за исключением корневого раздела.     
-
+    * Включение. snapper -c root set-config "TIMELINE_CREATE=yes"
+    * Отключение. snapper -c root set-config "TIMELINE_CREATE=no"
+    * Временные снимки временной шкалы включены по умолчанию, за исключением корневого раздела.     
     #+END_QUOTE
 
     *Отключение / включение снимков установки*
 
     #+BEGIN_QUOTE
-    
-    Включение: установите пакет snapper-zypp-plugin    
-    Отключение: удаление пакета snapper-zypp-plugin    
-    Установочные снимки включены по умолчанию.    
-
+    * Включение: установите пакет snapper-zypp-plugin
+    * Отключение: удаление пакета snapper-zypp-plugin
+    * Установочные снимки включены по умолчанию.    
     #+END_QUOTE
 
     *Отключение / включение снимков министрирования*
 
     #+BEGIN_QUOTE
-    
-    Включение: установите USE_SNAPPER в yes в /etc/sysconfig/yast2 .      
-    Отключение: установите USE_SNAPPER на no в /etc/sysconfig/yast2 .     
-    По умолчанию моментальные снимки управления включены.    
-    
+    * Включение: установите USE_SNAPPER в yes в /etc/sysconfig/yast2 .
+    * Отключение: установите USE_SNAPPER на no в /etc/sysconfig/yast2 .
+    * По умолчанию моментальные снимки управления включены.    
     #+END_QUOTE
