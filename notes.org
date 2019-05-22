@@ -246,7 +246,7 @@
 
 ** NOT start X
 
-   *Не стратуют иусы*
+   *Не стратуют иксы*
 
    В загрузочном меню grub выбираем нужный пункт и нажимаем "e"
    
@@ -261,12 +261,12 @@
    * modprobe.blacklist=nouveau
    #+END_QUOTE
 
-   ~acpi_osi=! acpi_osi="Windows 2009"~ для ноутбуков MSI
-   ~acpi_osi=! acpi_osi="Windows 2015"~ для др ноутбуков
+   acpi_osi=! acpi_osi="Windows 2009" *для ноутбуков MSI*
+   acpi_osi=! acpi_osi="Windows 2015" *для др ноутбуков*
 
    *Если добавляем запись непосредственно в grub.cfg*
 
-   *acpi_osi=! acpi_osi=\"Windows 2009\"* экранируем кавычки
+   acpi_osi=! acpi_osi=\"Windows 2009\"  *экранируем кавычки*
    
    *Reload GRUB2*
 
@@ -526,7 +526,8 @@
    $ gsettings set com.deepin.wrap.gnome.metacity compositing-manager true
    #+END_SRC
 
-   [[github issues link] -> [https://github.com/linuxdeepin/developer-center/issues/316]]
+   [[https://github.com/linuxdeepin/developer-center/issues/316%0A][github issues link]]
+
 ** Git, Github
 
    *Инициализация*
