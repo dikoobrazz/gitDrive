@@ -60,6 +60,79 @@
 
     #+END_SRC
 
+** Выборка уникальных значений из объекта БД
+*** views.py
+    **выборка уникальных записей по полю title из products**
+
+    #+BEGIN_SRC python
+
+    unique = list({item.title: item for item in products}.values())
+    
+    #+END_SRC
+    
+* Python
+** Запуск ботов на удаленном сервере
+   **Создайте новый экран и прикрепите к нему:**
+   
+   #+BEGIN_SRC shell
+
+   $ screen -S mybot
+   
+   #+END_SRC
+
+   **Запустите бот (замените python на python3, если вы используете Python 3):**
+   
+   #+BEGIN_SRC shell
+
+   $ python bot.py
+   
+   #+END_SRC
+
+   Отсоедините от экрана, удерживая CTRL и нажав A, затем D. 
+   Теперь вы можете отключиться от сервера, набрав exit, если хотите.
+
+   **Чтобы снова подключиться к экрану после входа в систему:**
+
+   #+BEGIN_SRC shell
+
+   $ screen -r mybot
+   
+   #+END_SRC
+
+   **Использование [[supervisor][https://ruhighload.com/%D0%97%D0%B0%D0%BF%D1%83%D1%81%D0%BA+%D0%BF%D1%80%D0%BE%D1%86%D0%B5%D1%81%D1%81%D0%BE%D0%B2+%D0%B2+supervisor]]**
+   
+   **Минимальный конф:**
+
+   #+BEGIN_QUOTE
+   
+   [program:worker]    
+   command=python /root/test.py    
+   stdout_logfile=/var/log/worker.log    
+   autostart=true     
+   autorestart=true    
+   user=root    
+   stopsignal=KILL    
+   numprocs=1    
+
+   #+END_QUOTE
+
+   Если используются относительные пути в системе, то обязательно используйте параметр directory.      
+   По умолчанию скрипт запускается из /
+
+** Telegram BOT pyTelegramBotAPI
+*** Зацикливание бота и обработка отключения сервера
+
+    #+BEGIN_SRC python
+
+    while True:  
+        try:  
+            bot.polling(none_stop=True)
+        except Exception as e:  
+            logger.error(e)  
+            time.sleep(15)
+    
+    #+END_SRC
+
 * JavaScript
 ** vue cli install
    
@@ -455,7 +528,7 @@
    $ gsettings set com.deepin.wrap.gnome.metacity compositing-manager true
    #+END_SRC
 
-   github link -> https://github.com/linuxdeepin/developer-center/issues/316
+   [[github issues link] -> [https://github.com/linuxdeepin/developer-center/issues/316]]
 ** Git, Github
 
    *Инициализация*
@@ -668,3 +741,298 @@
    *unalias ll* - удаление алиаса
    
    *type ll* - просмотр описания алиаса
+** Virtualbox settings #arch linux
+*** Настройка сети на виртуальной машине
+    **На virtualbox**
+    ~Сеть -> Адаптер -> добавить новый (редактируем)~
+    
+#+BEGIN_QUOTE
+   
+    vboxnet -> IPv4 адрес - 192.168.100.1
+    IPv4 маска подсети 255.255.255.0
+    
+#+END_QUOTE
+
+    **НАСТРОЙКИ виртуальной машины**
+
+    /Сеть/
+    
+#+BEGIN_QUOTE
+   
+    Адапртер1   
+    Виртуальный адаптер хоста → ☑vboxnet0   
+    Дополнительно → ☑Intel PRO/1000 MT Desktop(82540EM)   
+    Кабель подключен → ☑   
+
+#+END_QUOTE
+
+#+BEGIN_QUOTE
+
+    Адаптер2   
+    NAT   
+    Дополнительно → ☑Intel PRO/1000 MT Desktop(82540EM)   
+    Кабель подключен → ☑   
+
+#+END_QUOTE
+
+    **Файл interfaces (в загруженной виртуальной машине)**
+
+    #+BEGIN_SRC bash
+    
+    $ sudo nano /etc/network/interfaces
+
+    #+END_SRC
+
+    #+BEGIN_QUOTE
+    
+    iface eth0 inet static   
+    address 192.168.100.16   
+    netmask 255.255.255.0   
+    auto eth0   
+
+    iface eth1 inet dhcp   
+    auto eth1   
+
+    #+END_QUOTE
+
+    **На хост машине добавляемся в группу**
+
+    #+BEGIN_SRC bash
+    
+    $ sudo$  gpasswd -a $USER vboxusers
+
+    #+END_SRC
+
+    **Прописываем в файл**
+
+    #+BEGIN_SRC bash
+
+    $ sudo nano /etc/modules-load.d/virtualbox.conf
+    
+    #+END_SRC
+
+    #+BEGIN_QUOTE
+    
+    vboxdrv   
+    vboxnetadp   
+    vboxnetflt   
+    
+    #+END_QUOTE
+
+    **Расшаривание общей папки**
+
+    #+BEGIN_SRC bash
+
+    $ sudo pacman -S virtualbox-guest-utils
+    
+    #+END_SRC
+
+    **Добавляемся в группу**
+
+    #+BEGIN_SRC bash
+    
+    $ sudo gpasswd -a $USER vboxsf
+
+    #+END_SRC
+
+    **В самой виртуальной машине когда загрузится создаем папку vboxshare и в терминале**
+
+    #+BEGIN_SRC bash
+
+    $ sudo mount -t vboxsf -o rw,uid=1000,gid=1000 vboxshare vboxshare
+    
+    #+END_SRC
+
+    **На хост-машине тоже должна быть папка vboxshare**
+** Nvidia + Bumblebee #arch linux
+*** Установка и настройка Nvidia + Bumblebee
+
+    #+BEGIN_SRC bash
+
+    $ sudo pacman -Rc xf86-video-nouveau    
+    $ yaourt -Syyua    
+    
+    #+END_SRC
+
+    **Далее устанавливаем один из трех вариантов**
+
+    #+BEGIN_SRC bash
+    
+    $ sudo pacman -S bumblebee mesa xf86-video-intel nvidia lib32-nvidia-utils lib32-virtualgl nvidia-settings bbswitch
+
+    #+END_SRC
+
+    **или**
+
+    #+BEGIN_SRC bash
+
+    $ sudo pacman -S bumblebee mesa xf86-video-intel nvidia-340xx nvidia-340xx-utils lib32-nvidia-340xx-utils lib32-virtualgl bbswitch
+    
+    #+END_SRC
+
+    **или**
+
+    #+BEGIN_SRC bash
+    
+    $ sudo pacman -S bumblebee mesa xf86-video-intel nvidia-304xx nvidia-304xx-utils lib32-nvidia-304xx-utils lib32-virtualgl bbswitch
+
+    #+END_SRC
+
+    **Добавляем пользователя в группы:**
+
+    #+BEGIN_SRC bash
+
+    $ sudo gpasswd -a $USER bumblebee    
+    $ sudo gpasswd -a $USER video    
+    
+    #+END_SRC
+
+    **Включаем Bumblebee**
+
+    #+BEGIN_SRC bash
+    
+    $ sudo systemctl enable bumblebeed.service
+
+    #+END_SRC
+
+    **Перезагрузка**
+
+    #+BEGIN_SRC bash
+    
+    $ sudo shutdown -r now
+
+    #+END_SRC
+
+    **Проверка. Если оба off - все нормально**
+
+    #+BEGIN_SRC bash
+
+    $ optirun --status
+    
+    #+END_SRC
+
+    ~Bumblebee status: Ready (3.2.1). X inactive. Discrete video card is off.~
+
+    #+BEGIN_SRC bash
+
+    $ optirun pwd
+    
+    #+END_SRC
+
+    //home/just/
+
+    #+BEGIN_SRC bash
+
+    $ optirun$  --status
+    
+    #+END_SRC
+
+    ~Bumblebee status: Ready (3.2.1). X inactive. Discrete video card is off.~
+
+    **ЗАПУСК NVIDIA Settings**
+
+    #+BEGIN_SRC bash
+
+    $ optirun -b none nvidia-settings -c :8
+    
+    #+END_SRC
+
+    **Устанавливаем**
+
+    #+BEGIN_QUOTE
+    
+    primus
+    lib32-primus
+
+    #+END_QUOTE
+
+    **Запуск программ с видеокартой**
+
+    #+BEGIN_SRC bash
+
+    $ primusrun steam
+    
+    #+END_SRC
+
+    **После обновления драйвера Nvidia**
+
+    #+BEGIN_SRC bash
+
+    $ sudo mkinitcpio -P
+    
+    #+END_SRC
+** Mmount files with server #arch linux
+*** Монтируем файлы с удаленного сервера на локальную машину
+    
+    **Устанавливаем**
+
+    #+BEGIN_SRC bash
+
+    $ sudo pacman -S sshfs fuse
+    
+    #+END_SRC
+
+    **Создаем папку для примонтированных файлов**
+
+    #+BEGIN_SRC bash
+
+    $ mkdir /home/username/www
+    
+    #+END_SRC
+
+    **Монтируем файлы**
+
+    #+BEGIN_SRC bash
+
+    $ sudo sshfs username@192.168.100.16:/var/www/html/ /home/dikoo/www/    
+    $ username password.....    
+
+    #+END_SRC
+
+    **Размонтирование файлов с сервера**
+
+    #+BEGIN_SRC bash
+
+    $ sudo umount /home/username/www
+    
+    #+END_SRC
+
+    **или**
+
+    #+BEGIN_SRC bash
+    
+    $ fusermount -u /home/username/www
+    
+    #+END_SRC
+** Snapper #OpenSuse
+*** Включение выключение автоматичческих снимков
+
+    **Отключение / включение снимков временной шкалы**
+
+    #+BEGIN_QUOTE
+    
+    Включение. snapper -c root set-config "TIMELINE_CREATE=yes"     
+    Отключение. snapper -c root set-config "TIMELINE_CREATE=no"    
+    Временные снимки временной шкалы включены по умолчанию, за исключением корневого раздела.     
+
+    #+END_QUOTE
+
+    **Отключение / включение снимков установки**
+
+    #+BEGIN_QUOTE
+    
+    Включение: установите пакет snapper-zypp-plugin    
+    Отключение: удаление пакета snapper-zypp-plugin    
+    Установочные снимки включены по умолчанию.    
+
+    #+END_QUOTE
+
+    **Отключение / включение снимков министрирования**
+
+    #+BEGIN_QUOTE
+    
+    Включение: установите USE_SNAPPER в yes в /etc/sysconfig/yast2 .      
+    Отключение: установите USE_SNAPPER на no в /etc/sysconfig/yast2 .     
+    По умолчанию моментальные снимки управления включены.    
+    
+    #+END_QUOTE
