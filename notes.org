@@ -1017,3 +1017,135 @@
     * Отключение: установите USE_SNAPPER на no в /etc/sysconfig/yast2 .
     * По умолчанию моментальные снимки управления включены.    
     #+END_QUOTE
+
+** Youtube music download   
+*** Скачиваем музыку отдельно от видео с youtube
+
+    #+BEGIN_SRC bash
+
+    $ youtube-dl --extract-audio --audio-format mp3 https://www.youtube.com/watch\?v\=2daUg5ZcFi0
+    
+    #+END_SRC
+
+    *или*
+
+    #+BEGIN_SRC bash
+
+    $ youtube-dl -F http://www.youtube.com/watch?v=HRIF4_WzU1w
+    
+    #+END_SRC
+
+    #+BEGIN_QUOTE
+    * 171         webm      audio only  DASH webm audio , audio@ 48k (worst)     
+    * 140         m4a       audio only  DASH audio , audio@128k    
+    * 160         mp4       192p        DASH video     
+    #+END_QUOTE
+
+    #+BEGIN_SRC bash
+
+    $ youtube-dl -f 140 http://www.youtube.com/watch?v=HRIF4_WzU1w
+    
+    #+END_SRC
+
+    В этом случае формат будет m4a.
+    /Можно переименовать в mp3/
+    
+** Nvidia + Bumblebee #opensuse leap 15
+*** Установка и настройка Nvidia + Bumblebee в OpenSuse Leap 15
+    #+BEGIN_SRC bash
+    
+    sudo zypper ar -f http://download.opensuse.org/repositories/X11:/Bumblebee/openSUSE_Leap_15.0 Bumblebee
+    sudo zypper in bumblebee
+    sudo usermod -G video,bumblebee insert_your_username_here
+    sudo systemctl enable bumblebeed
+    sudo systemctl start bumblebeed
+    sudo echo "blacklist nouveau" >> /etc/modprobe.d/99-local.conf
+    sudo mkinitrd
+    sudo reboot
+
+    #+END_SRC
+   
+    *Далее, после перезагрузки:*
+
+    #+BEGIN_SRC bash
+
+    sudo zypper in patterns-devel-base-devel_kernel
+    sudo zypper in nvidia-bumblebee nvidia-bumblebee-32bit
+    sudo echo "blacklist nvidia" >> /etc/modprobe.d/99-local.conf
+    sudo systemctl enable dkms
+    sudo systemctl start dkms
+    sudo mkinitrd
+    sudo reboot
+
+    #+END_SRC
+    
+    *После перезагрузки:*
+    Редактируем файл ~/etc/bumblebee/bumblebee.conf~
+    Вставляем в начало файла, ничего не удаляем и не исправляем
+
+    #+BEGIN_QUOTE
+    
+    [bumblebee]
+    TurnCardOffAtExit=true
+    Driver=nvidia
+
+    #+END_QUOTE
+
+    Перезапускаем bumblebee
+    
+    #+BEGIN_SRC bash
+
+    sudo systemctl restart bumblebeed
+    
+    #+END_SRC
+
+   Проверяем запуск:
+
+   #+BEGIN_SRC bash
+
+   optirun --status
+   optirun glxspheres
+   
+   #+END_SRC
+
+   *При каждом обновлении ядра пересобираем:*
+
+   #+BEGIN_SRC bash
+
+   sudo mkinitrd
+   
+   #+END_SRC
+   
+   Если nvidia-bumblebee не заводится делаем следующее:
+
+   #+BEGIN_SRC bash
+
+   sudo systemctl stop dkms
+   sudo systemctl disable dkms
+   sudo zypper remove nvidia-bumblebee nvidia-bumblebee-32bit
+   sudo mkinitrd
+   sudo reboot
+   
+   #+END_SRC
+
+   После перезагрузки заного устанавливаем
+
+   #+BEGIN_SRC bash
+
+   sudo zypper in nvidia-bumblebee nvidia-bumblebee-32bit
+   sudo systemctl enable dkms
+   sudo systemctl start dkms
+   sudo mkinitrd
+   sudo reboot
+
+   #+END_SRC
+
+   После перезагрузки
+
+   #+BEGIN_SRC bash
+
+   sudo systemctl restart bumblebeed
+   optirun --status
+   optirun glxspheres
+   
+   #+END_SRC
