@@ -141,6 +141,22 @@
    
    #+END_SRC
 
+** Изучаем JavaScript 2019
+*** Портал Ильи Кантора Learn JavaScript
+    [[http://learn.javascript.ru/][Learn JavaScript]]
+*** Задачи по программированию
+    [[https://www.codewars.com/][Codewars]]
+*** Серия книг по JavaScript на русском языке
+    [[https://github.com/azat-io/you-dont-know-js-ru][Серия книг «You don't know JS»]]
+*** Книга «Exploring ES6» на английском
+    [[https://exploringjs.com/es6/][«Exploring ES6»]]
+*** Большой справочник по JavaScript от MDN
+    [[https://developer.mozilla.org/ru/][MDN web docs]]
+*** Книга «Грокаем алгоритмы» на русском языке
+   [[https://github.com/mduisenov/GrokkingAlgorithms][«Грокаем алгоритмы»]] 
+*** Гарвардский курс «CS50» видео Youtube на русском
+    [[https://www.youtube.com/watch?v=Sy_wba7l1UU&list=PLawfWYMUziZqyUL5QDLVbe3j5BKWj42E5][Легендарный Гарвардский курс CS50]]
+
 * Linux
 ** import key
 
@@ -1149,3 +1165,29 @@
    optirun glxspheres
    
    #+END_SRC
+** Snapper undochange #opensuse
+*** Отмена изменений в снимке
+    
+    #+BEGIN_SRC bash
+
+    sudo snapper undochange 1315..1316
+    
+    #+END_SRC
+
+** Snapper create snap #opensuse
+*** Создание снимка, терминал
+    
+    #+BEGIN_SRC bash
+
+    sudo snapper create --type pre --print-number --description "Before somechange 22.06.2019"
+    ...1315
+    
+    #+END_SRC
+ 
+    *После внесенных изменений в систему:*
+
+    #+BEGIN_SRC bash
+
+    sudo snapper create --type post --pre-number 1315 --description "After somechange 22.06.2019"
+    
+    #+END_SRC
