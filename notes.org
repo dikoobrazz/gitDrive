@@ -8,6 +8,14 @@
 ** Олег Бунин высоконагруженные системы :
    https://www.youtube.com/watch?v=KmIE5K6adus﻿
 
+* Ruby
+** Framework
+*** Sinatra (kind express, flask)
+*** Padrino (kind django) no progress
+*** Hanami (new, 2-3 year)
+*** RoR
+*** Grape (from API)
+*** Jets (lambda servlets)
 * Django
 ** Расширение в шаблонах
 
@@ -1190,4 +1198,15 @@
 
     sudo snapper create --type post --pre-number 1315 --description "After somechange 22.06.2019"
     
+    #+END_SRC
+** OpenSuse update Error
+*** Ошибка чтения репозиториев обновления в OpenSuse
+
+    *В терминале*
+    
+    #+BEGIN_SRC bash
+
+    sudo rpm --rebuilddb
+    sudo zypper clean && sudo zypper ref
+
     #+END_SRC
